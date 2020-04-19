@@ -13,6 +13,7 @@ import { Bio } from '../components/bio'
 import { PostNavigator } from '../components/post-navigator'
 import { Disqus } from '../components/disqus'
 import { Utterences } from '../components/utterances'
+import Adsense from '../components/adsense'
 import * as ScrollManager from '../utils/scroll'
 
 import '../styles/code.scss'
@@ -47,6 +48,7 @@ export default ({ data, pageContext, location }) => {
       {!!sponsor.buyMeACoffeeId && (
         <SponsorButton sponsorId={sponsor.buyMeACoffeeId} />
       )}
+      <Adsense />
       <Elements.Hr />
       <Bio />
       <PostNavigator pageContext={pageContext} />
