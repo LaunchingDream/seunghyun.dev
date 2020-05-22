@@ -132,9 +132,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
 
 오른쪽 마우스를 클릭할 경우, 현재 마우스 버튼의 좌표를 확인할 수 있다고 위에서 설명했다. 만일 선분이 있을 경우에는 선분들의 위치와 색상, 현재 위치와 선분들과의 거리를 모두 확인할 수 있다. 선분과의 거리는 `distance`라는 함수를 통해 구현하였다.
 
-![여러 선들을 그린 모습](./images/direct2d-1/LineDrawingApplication_11.jpg)
+![여러 선들을 그린 모습](./images/direct2d-1/LineDrawingApplication_12.jpg)
 
-![선들과의 마우스 커서 거리를 출력한 모습](./images/direct2d-1/LineDrawingApplication_11.jpg)
+![선들과의 마우스 커서 거리를 출력한 모습](./images/direct2d-1/LineDrawingApplication_13.jpg)
 
 오른쪽 마우슥가 다운되었을 때 실행되는 소스이다. 오른족 마우스 클릭한 좌표와 선들과의 처리차 저장하는 배열 `distanceResult`, 현재 위치를 저장하는 지역 변수 `currentX`, `currentY`, 선분과의 거리와 우선순위를 통해 선을 선택하는 전역 변수 `lineSelect`, 현재 좌표와 선분들의 거리를 체크해주는 함수 `distance` 호출 등이 주로 이용된다.
 
@@ -282,3 +282,70 @@ double GetMax(double d1, double d2) {
   return d2;
 }
 ```
+
+## 6. 선의 드래그 기능
+오른쪽 마우스가 다운되었을 경우 모든 선분들의 거리를 체크한다. 그 중에 선과의 거리가 픽셀 –1이상, +1이하이 되는 선분들의 우선순위(가장 최신에 생성된 선분)를 체크한 후에 최종적으로 하나의 선을 선택한다. 하나의 선의 번호가 결정이 되면 마우스 드래그가 가능하게 전역 변수 `lineMoving`가 true 로 변경이 되고 드래그가 가능하다.
+
+![선이 드래그되어서 움직인 모습](./images/direct2d-1/LineDrawingApplication_14.png)
+
+![선이 드래그 된 것을 콘솔 로그로 확인 가능](./images/direct2d-1/LineDrawingApplication_16.png)
+
+
+// LineDrawingApplication_17
+
+선분들의 거리를 비교하여 distanceResult[10]에 저장하고, 거리 차이가 1 이하인 선들 중에 가장 나중에 만들어진 선을 lineSelect 변수에 저장한다.
+
+```C
+for (int l = 0; l < (int) lines.size(); l++) {
+  if (distanceResult[l] >= -1 && distanceResult[l] <= 1) {
+    lineSelect = l;
+  }
+}
+```
+
+![겹친 선들 중에 가장 마지막에 추가된 선을 움직일 수 있음](./images/direct2d-1/LineDrawingApplication_17.png)
+
+![여러 선 중 선택된 선의 번호를 출력](./images/direct2d-1/LineDrawingApplication_18.jpg)
+
+위 디버그 출력을 보게 되면, 현재 좌표와 line 1과 line 4의 거리가 픽셀 1 이하인 것을 확인할 수 있다. 그러나 line 4가 나중에 생성되었기 때문에 line 4번이 선택되었다. 결국 드래그를 시도할 경우 line4번만 움직이게 된다.
+
+마우스가 움직일 때 작동되는 소스
+
+```C
+case WM_MOUSEMOVE: {
+  // 마우스가 왼쪽 클릭된 상태에서 움직일 경우(선 그리기)
+  if (inputting) {
+    ...
+  } // 잠시 생략
+  // 마우스가 왼쪽 클릭된 상태에서 움직일 경우(선 드래그)
+  else if (lineMoving) {
+    // 실수형 intervalX, intervalY를 통해 선택된 라인의 X와 Y의 변경을 통해 드래그 효과를 만듬
+    double intervalX = 0.0;
+    double intervalY = 0.0;
+    HDC hdc = ::GetDC(hWnd);::SetROP2(hdc, R2_NOTXORPEN);
+    // 이전 라인을 지움
+    drawLine(hdc, lines[lineSelect]);
+    // 현재 클릭된 오른쪽 마우스와 line 구조체의 p0과 p1의 거리를 비교해 어디를 기준으로
+    드래그 할 것인지 분별
+    if (GetDistance2(lines[lineSelect].p0, LOWORD(lParam), HIWORD(lParam)) >=
+      GetDistance2(lines[lineSelect].p1, LOWORD(lParam), HIWORD(lParam))) {
+      intervalX = LOWORD(lParam) - lines[lineSelect].p1.x;
+      intervalY = HIWORD(lParam) - lines[lineSelect].p1.y;
+    } else {
+      intervalX = LOWORD(lParam) - lines[lineSelect].p0.x;
+      intervalY = HIWORD(lParam) - lines[lineSelect].p0.y;
+    }
+    // intervalX를 통해 p0과 p1의 x값을 동일하게 증감
+    // intervalY를 통해 p0과 p1의 y값을 동일하게 증감
+    lines[lineSelect].p0.x += intervalX;
+    lines[lineSelect].p0.y += intervalY;
+    lines[lineSelect].p1.x += intervalX;
+    lines[lineSelect].p1.y += intervalY;
+    // 이후 라인을 그림
+    drawLine(hdc, lines[lineSelect]);::ReleaseDC(hWnd, hdc);
+  }
+  break;
+}
+```
+
+위 소스를 보면 `GetDistance2` 함수를 이용해 현재 위치와 라인의 p0, p1의 거리를 비교하여서 어디를 눌러서 드래그 할 것인지를 분별하여 드래그하게 된다. 만일 p0의 위치가 현재 오른쪽 마우스 다운한 위치와 더 가깝다면 p0의 위치를 선택하여 선의 드래그가 시작되고, 반대로 p1의 위치가 더 가깝다면 p1의 위치를 선택하여 선의 드래그가 시작되고 마우스를 움직이면 된다. `GetDistance2` 함수를 이용하여 p0 또는 p1를 정하게 되면 그 것을 기분으로 현재 움직이는 마우스의 좌표의 X, Y 차이를 통해 line의 모든 변수를 이동시킨다.
