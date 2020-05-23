@@ -288,10 +288,8 @@ double GetMax(double d1, double d2) {
 
 ![선이 드래그되어서 움직인 모습](./images/direct2d-1/LineDrawingApplication_14.png)
 
-![선이 드래그 된 것을 콘솔 로그로 확인 가능](./images/direct2d-1/LineDrawingApplication_16.png)
+![선이 드래그 된 것을 콘솔 로그로 확인 가능](./images/direct2d-1/LineDrawingApplication_16.jpg)
 
-
-// LineDrawingApplication_17
 
 선분들의 거리를 비교하여 distanceResult[10]에 저장하고, 거리 차이가 1 이하인 선들 중에 가장 나중에 만들어진 선을 lineSelect 변수에 저장한다.
 
