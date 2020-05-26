@@ -6,6 +6,8 @@ thumbnail: './images/custom-range-bar/custom-range-bar.png'
 draft: false
 ---
 
+[Github 저장소](https://github.com/LaunchingDream/Android-custom-range-bar)
+
 ![Custom Range bar1](./images/custom-range-bar/custom-range-bar_1.jpg)
 
 ![Custom Range bar2](./images/custom-range-bar/custom-range-bar_2.jpg)
