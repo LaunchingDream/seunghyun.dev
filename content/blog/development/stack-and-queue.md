@@ -1,5 +1,5 @@
 ---
-title: 스택”과 “우선순위큐를 사용한 데이터처리 콘솔 응용 프로그램
+title: 스택과 우선순위큐를 사용한 데이터처리 콘솔 응용 프로그램
 date: 2014-03-31 13:00:00
 category: development
 thumbnail: './images/custom-range-bar/custom-range-bar.png'
@@ -84,7 +84,7 @@ void Stack::RemoveAll() {
   students.clear();
 }
 ```
-#### 스택의 함수 2) RemoveAll
+### 스택의 함수 2) RemoveAll
 * 스택의 현재 높이(m_top)를 –1로 초기화하여 데이터가 아무것도 없음을 표현한다.
 * 학생들의 구조체 벡터를 초기화한다. 이 때 벡터의 기본 함수 clear() 사용한다.
 * 반환 값은 없다.
@@ -114,4 +114,61 @@ Student Stack::Pop(void) {
 
 ---
 
+## 3. 다양한 함수
+```C
+void PrintStudent(Stack stack);
+void SaveStudentTxt(Stack stack);
+void LoadStudentTxt();
+void PrintPriorityQueue();
+```
+class Stack에 있는 함수 외에도 다양한 함수들이 있다.
+* `PrintStudent` - Stack에 저장된 학생들의 정보를 스크린에 출력해주는 함수
+* `LoadStudentTxt` - Stack의 학생들의 정보를 텍스트 파일로 저장(data.txt)해주는 함수
+* `LoadStudentTxt` - 텍스트 파일를 통해 학생의 정보를 불러와 pqueue에 push해주는 함수
+* `PrintPriorityQueue` - 학생들의 정보가 정렬된 pqueue(priority_queue) 출력해주는 함수
+
+```C
+void PrintStudent(Stack stack) {
+  // PrintStudent 함수가 잘 실행되었다는 출력문은 여기서 생략
+  for (int i = stack.m_top; i >= 0; i--) {
+    cout << "이름: \t" << stack.students[i].Name << "\t\t";
+    cout << "학번: \t" << stack.students[i].Number << "\t\t";
+    cout << "성적: \t" << stack.students[i].Score << endl;
+  }
+  cout << endl;
+}
+```
+
+### 1) `PrintStudent` - 현재 Stack에 존재하는 학생들의 정보를 출력하는 함수
+* stack의 m_top 변수의 크기를 하나씩 줄이면서 stack 안에 있는 벡터 students의 학생의 이름, 학번, 성적을 출력한다.
+
+```C
+void SaveStudentTxt(Stack stack) {
+  ofstream fout;
+  fout.open("data.txt");
+  Student temp; // 임시 Student 구조체 temp 선언
+  int count = 0; // 몇 명의 학생이 text 파일에 저장됬는지 카운트
+  for (int i = stack.m_top; i >= 0; i--) {
+    temp = stack.Pop(); // stack의 pop함수의 리턴값을 student 구조체 temp에 저장
+    fout << temp.Score << endl; // 학생의 성적
+    fout << temp.Number << endl; // 학생의 학번
+    fout << temp.Name; // 학생의 이름
+    if (i != 0) // 마지막 element는 공백라인 넣지 않음
+      fout << endl; //공백라인
+    count++; // 텍스트 파일에 저장될 때 마다 count 변수 1씩 증가
+  }
+  fout.close();
+  // 몇 명의 데이터가 data.txt에 저장 되었는지 알리는 출력문은 생략
+}
+```
+
+### 2) `SaveStudentTxt` - Stack에 존재하는 학생들의 정보를 텍스트 파일로 저장
+* 스택의 데이터를 하나씩 pop하며 꺼내서 파일에 저장한다.
+* 스택의 pop해서 나오는 값은 Student 구조체이다.
+* ofstream 클래스로 객체(fout)를 선언한다.
+* fout open() 메소드를 사용하여 출력하길 원하는 파일명(data.txt)를 지정한다.
+* 스트림 객체를 사용하여 출력한다. fout << ... << endl;
+* 오픈 파일을 닫는다. (fout.close())
+
+---
 문서 작성 중입니다.
