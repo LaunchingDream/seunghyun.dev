@@ -170,5 +170,119 @@ void SaveStudentTxt(Stack stack) {
 * 스트림 객체를 사용하여 출력한다. fout << ... << endl;
 * 오픈 파일을 닫는다. (fout.close())
 
----
+```C
+void LoadStudentTxt() {
+  // data.txt를 통해 학생 데이터가 잘 읽어왔다는 출력문은 생략
+  ifstream fin; // ifstream class로 객체를 선언
+  fin.open("data.txt");
+  // open() 메소드를 사용하여 입력하길 원하는 파일을 지정
+  char buf[50];
+  int n = 0;
+  while (!fin.eof()) {
+    Student s; // 임시 Student 구조체 s 선언,
+    fin.getline(buf, 50); //성적
+    s.Score = atof(buf);
+    fin.getline(buf, 50); //학번
+    s.Number = atoi(buf);
+    fin.getline(buf, 50); //이름
+    s.Name = string(buf);
+    cout << "이름: \t" << s.Name << "\t\t";
+    cout << "학번: \t" << s.Number << "\t\t";
+    cout << "성적: \t" << s.Score << endl;
+    pqueue.push(s); // 현재 text 파일을 통해 불러온 학생의 정보들을 pqueue에 push
+    n++;
+  }
+  fin.close(); // 오픈한 파일을 닫음
+  cout << "- <" << n << ">명의 데이터 priority_queue에 Push 완료!" <<
+    endl << endl;
+}
+```
+
+### 3) `LoadStudentTxt` - 텍스트 파일 통해 학생 정보를 불러와 pqueue에 push
+* ifstream class로 객체(fin)를 선언한다.
+* fin open() 함수를 통해 텍스트 파일 ‘data.txt’을 지정하여 불러온다.
+* 변수 buf와 fin getline 함수를 이용해 학생의 정보를 임시 Student 구조체 s에 저장한다.
+* 임시 구조체 s를 priority_queue형 pqueue에 push한다.
+* fin close()함수를 통해 오픈한 파일을 닫는다.
+
+```C
+void PrintPriorityQueue() {
+  // PrintPriorityQueue 함수가 잘 실행되었다는 출력문은 여기서 생략
+  while (!pqueue.empty()) {
+    cout << "이름: \t" << pqueue.top().Name << "\t\t"; //이름
+    cout << "학번: \t" << pqueue.top().Number << "\t\t"; //학번
+    cout << "성적: \t" << pqueue.top().Score << endl; //점수
+    pqueue.pop();
+  }
+  cout << endl;
+}
+```
+
+### 4) `PrintPriorityQueue` - 학생의 정보가 정렬된 priority_queue 출력해주는 함수
+* 함수가 소철되면 조건문을 통해 pqueue가 비었는지 확인하는 체크한다.
+* pqueue의 top의 데이터들을 출력해주고 pop을 실행시킨다.
+* pqueue가 비워지게 되면 while을 탈출하고 함수를 나오게 된다.
+
+## 4. priority_queue
+
+```C
+// 성적를 비교해주는 구조체
+struct GradeCompare {
+  bool operator()(const Student s1,
+    const Student s2)
+  const {
+    return s1.Score < s2.Score;
+  }
+};
+// 성적을 기준으로 구조체를 정렬해주는 priority_queue
+priority_queue < Student, vector < Student > , GradeCompare > pqueue;
+```
+priority_queue에 Student 구조체, 벡터, 성적 비교 구조체를 입력, 선언
+* 참고1) priority_queue는 queue의 top에 어떤 일정한 규칙에 의해 가장 우선시 되는 값이 오도록 만들어진 container adaptors 종류의 하나이다.
+* 참고2) vector나 deque 클래스를 컨테이너로 사용할 수 있다.
+* 참고3) default로 container 타입을 지정하지 않으면 vector가 된다.
+
+## 5. main 함수의 'do-while'과 'switch' 문
+
+```C
+# define ESC 27 // 사용자가 키보드 'Esc' 키를 누를 때
+# define SPACE 32 // 사용자가 키보드 'Space bar' 키를 누를 때
+# define ENTER 13 // 사용자가 키보드 'Enter' 키를 누를 때
+```
+사용자가 키보드로 입력했을 때 숫자로 입력을 받으면, 그 숫자를 미리 ESC, SPACE, ENTER 이름으로 정의한다.
+
+```C
+Stack stack; // 사용할 Stack 구조체 선언
+int keys = 0; // 사용자가 입력할 키를 저장할 정수 int형 변수 keys
+do {
+  keys = _getch(); // 사용자로부터 키를 입력 받음
+  switch (keys) {
+  case ESC:
+    { //생략 }
+      case ENTER: { //생략 }
+        case SPACE: { //생략 }
+          default: break;
+        }
+      }
+      while (keys != ESC);
+```
+
+* 사용할 구조체 Stack을 stack으로, 사용자로부터 입력받을 키를 저장할 정수형 변수 keys로 새롭게 생성한다.
+* do-while 문을 통해 사용자가 'ESC' 키를 누르기 전까지 계속 입력 받는다. 사용자는 'ESC' 키 말고도 '스페이스 바'와 '엔터키'를 누를 수 있고, 다른 키를 입력받았을 경우 아무 변화가 일어나지 않는다.
+
+```C
+case ESC:
+  cout << "-------------------------------------------------" << endl;
+cout << "종료: ";
+break;
+```
+
+![키로 컨트롤](./images/stack-queue/DataProcessing_ConsoleApplication_Report_1)
+
+ESC를 누르게 되면 종료 출력 문이 나오게 되고 do-while문을 나오게 된다. 그리고 프로그램은 종료가 된다.
+
+--- 
+
+// 
+
 문서 작성 중입니다.
