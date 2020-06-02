@@ -277,12 +277,94 @@ cout << "종료: ";
 break;
 ```
 
-![키로 컨트롤](./images/stack-queue/DataProcessing_ConsoleApplication_Report_1)
+![키로 컨트롤](./images/stack-queue/DataProcessing_ConsoleApplication_Report_1.jpg)
+
+
 
 ESC를 누르게 되면 종료 출력 문이 나오게 되고 do-while문을 나오게 된다. 그리고 프로그램은 종료가 된다.
 
---- 
+```C
+case ENTER:
+  system("cls");
+char ch;
+try {
+  cout << "학생의 수를 입력(숫자): ";
+  cin >> STUDENT_COUNT;
+  cin.get(ch);
+  if (cin.fail() || isalpha(ch) || ispunct(ch))
+    throw "!!! 정수입력에러(엔터 눌러서 다시 입력) !!!";
+} catch (char * error) {
+  cin.clear();
+  while ((ch = cin.get() != '\n') && ch != EOF);
+  cout << error << endl;
+  break;
+}
+```
 
-// 
+사용자가 엔터키를 누르게 되면 학생의 수를 설정할 수 있다.
 
-문서 작성 중입니다.
+
+![학생의 수를 입력](./images/stack-queue/DataProcessing_ConsoleApplication_Report_2.jpg)
+
+단순히 엔터키를 누르게 되면, 바로 위에 화면처럼 학생의 수를 입력하라고 출력문이 나온다.
+
+![사용자 수는 숫자만 입력 가능](./images/stack-queue/DataProcessing_ConsoleApplication_Report_3.jpg)
+
+만일 사용자가 사용자의 수를 입력할 때, 숫자 외에 다른 것을 입력하게 되면 오류를 출력해주고 다시 숫자를 입력 받는다.
+
+![학생 수 출력](./images/stack-queue/DataProcessing_ConsoleApplication_Report_4.jpg)
+
+사용자가 엔터키를 통해, 원하는 숫자를 입력하게 되면 바로 그 학생의 수대로 stack에 저장, text의 저장과 불러오기, priority_Queue 출력등이 실행되게 된다. 
+
+바로 위에 있는 화면은 7명을 설정했을 때 모습을 자른 것이다.
+
+![학생 수 출력2](./images/stack-queue/DataProcessing_ConsoleApplication_Report_5.jpg)
+
+바로 위에 있는 화면은 2명을 설정했을 때의 전체 모습이다.
+
+```C
+case SPACE:
+  system("cls");
+cout << "현재 학생 수 : " << STUDENT_COUNT << endl;
+// stack의 초기화, STUDENT_COUNT를 입력받아 배열의 크기 고정, 배열의 높이를 - 1 로 설정
+stack.Initialize(STUDENT_COUNT);
+// 랜덤 함수 rand를 통해 학생들의 학번, 이름, 성적을 저장
+// Student 구조체 temp를 임시로 만들고 temp를 stack에 push함
+srand(time(NULL));
+for (int i = 0; i < STUDENT_COUNT; i++) {
+  Student temp; // 임시 Student 구조체 temp
+  temp.Number = ((rand() % 14 + 2001) * 100) + rand() % 100; // 학번
+  temp.Name = names[rand() % 16]; // 이름
+  temp.Score = (rand() % 10001) / 100.0; // 성적
+  stack.Push(temp); // stack에 temp를 push
+}
+PrintStudent(stack); // Stack에 저장된 학생들의 정보를 스크린에 출력
+SaveStudentTxt(stack); // Stack의 학생들의 정보를 텍스트 파일로
+저장(data.txt)
+LoadStudentTxt(); // 텍스트 파일를 통해 학생들의 정보를 불러와서 pqueue에 push함
+PrintPriorityQueue(); // 학생들의 정보가 정렬된 pqueue(priority_queue) 출력
+// 사용자가 다른 키를 입력할 수 있는 내용을 알리는 출력문 내용 생략
+break;
+```
+
+사용자가 ‘스페이스 바‘ 키를 누르게 되면, 우선 화면을 깨끗이 지우고 현재 학생의 수(STUDENT_COUNT)를 통해 stack를 초기화하게 된다. 그리고 rand함수를 통해 각 학생들의 정보들을 업데이트 해주고 위에서 설명한 외부 함수 4개들이 실행되게 된다. 위에서는 생략이 되었지만, 다른 키(엔터, 스페이스바, ESC)를 입력할 수 있도록 안내문을 출력해준다.
+
+![총 정리](./images/stack-queue/DataProcessing_ConsoleApplication_Report_6.jpg)
+
+
+* 스페이스 바를 누르게 되면 위 화면처럼 나오게 된다. 그리고 다시 스페이스바를 누르게 되면 새로운 정보로 stack이 업데이트가 되어서 다시 출력된다.
+* 맨 아래에는 사용자가 다른 키를 입력할 수 있도록 안내문을 보여준다.
+
+## 6. data.txt
+
+![데이터 파일](./images/stack-queue/DataProcessing_ConsoleApplication_Report_7.jpg)
+
+![텍스트 파일](./images/stack-queue/DataProcessing_ConsoleApplication_Report_8.jpg)
+
+'data.txt' 가 만들어진 폴더의 모습과 텍스트 파일을 열어본 모습이다. 성적과 학번, 이름 순서대로 저장이 된다. 현재 위에는 6명을 기준으로 stack을 초기화 해보았다.
+
+## 7. 과제 소감
+
+![과제 소감](./images/stack-queue/DataProcessing_ConsoleApplication_Report_9.jpg)
+
+이번 과제를 통해서 구조체, 클래스, 다양한 함수들을 복습할 수 있었다. 특히 priority_queue, ofstream, ifstream 등을 새롭게 접해볼 수가 있었고, 내가 만든 구조체들이 텍스트에 저장과 로드하는 것들을 재밌게 해보았다. 게임 프로그래밍 과제가 이번이 두 번째이지만, 프로그래밍 하는 것에 더욱 흥미가 생기고 개발자로 가는 것에 더 긍정적으로 생각이 들었다. 앞으로의 수업과 과제가 더욱 기대가 된다.
