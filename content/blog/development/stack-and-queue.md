@@ -339,8 +339,7 @@ for (int i = 0; i < STUDENT_COUNT; i++) {
   stack.Push(temp); // stack에 temp를 push
 }
 PrintStudent(stack); // Stack에 저장된 학생들의 정보를 스크린에 출력
-SaveStudentTxt(stack); // Stack의 학생들의 정보를 텍스트 파일로
-저장(data.txt)
+SaveStudentTxt(stack); // Stack의 학생들의 정보를 텍스트 파일로 저장(data.txt)
 LoadStudentTxt(); // 텍스트 파일를 통해 학생들의 정보를 불러와서 pqueue에 push함
 PrintPriorityQueue(); // 학생들의 정보가 정렬된 pqueue(priority_queue) 출력
 // 사용자가 다른 키를 입력할 수 있는 내용을 알리는 출력문 내용 생략
