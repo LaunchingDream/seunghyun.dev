@@ -6,6 +6,19 @@ thumbnail: './images/custom-range-bar/custom-range-bar.png'
 draft: false
 ---
 
+STL을 익히기 위한 콘솔 응용프로그램 작성
+
+[소스 코드 다운로드](https://goo.gl/EVMpw9)
+
+### 프로그램 기능
+
+* 학생 정보의 구조체 구현
+* 각 학생의 데이터는 생성 즉시  스택에 추가
+* 모든 학생의 데이터의 생성이   완료된 후 text 파일로 출력
+* Text 파일로부터 데이터 입력
+* 우선 순위큐의 내용을 순서대로 화면에 출력
+
+
 ## 1. 기본 학생 데이터
 
 학생의 정보를 저장하는 구조체 Student이다. 총 3개의 필드를 가지고 있다. 학생의 성적에 해당하는 실수 float형 Score, 학생의 학번의 정수 int형 Number, 학생의 성적의 문자열 string형 Name 변수이다. 
